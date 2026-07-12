@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Print Sign — BeeBee's Doodle Booth</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FFF8F0;
+    --blush: #FFD6D6;
+    --mint: #C5EAD8;
+    --yellow: #FFE9A0;
+    --ink: #2D2A26;
+    --brown: #7A5C42;
+    --accent: #FF8FA3;
+    --font-header: "Playfair Display", Georgia, serif;
+    --font-text: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-text);
+    background: var(--cream);
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 30px;
+  }
+  .sign {
+    background: white;
+    border: 4px solid var(--ink);
+    border-radius: 34px;
+    box-shadow: 10px 10px 0 var(--ink);
+    max-width: 560px;
+    width: 100%;
+    padding: 48px 42px;
+    text-align: center;
+  }
+  .sign-logo { width: 110px; height: 110px; object-fit: contain; }
+  h1 {
+    font-family: var(--font-header);
+    font-size: 2.6rem;
+    margin: 10px 0 6px;
+  }
+  .tagline {
+    font-family: var(--font-header);
+    font-size: 1.3rem;
+    color: var(--brown);
+    margin-bottom: 26px;
+  }
+  .qr-frame {
+    display: inline-block;
+    background: white;
+    border: 4px solid var(--ink);
+    border-radius: 24px;
+    padding: 18px;
+    box-shadow: 6px 6px 0 var(--accent);
+    margin-bottom: 24px;
+  }
+  .qr-frame img { display: block; width: 280px; height: 280px; }
+  .cta {
+    font-family: var(--font-header);
+    font-size: 1.7rem;
+    margin-bottom: 10px;
+  }
+  .url {
+    display: inline-block;
+    background: var(--yellow);
+    border: 3px solid var(--ink);
+    border-radius: 40px;
+    padding: 10px 26px;
+    font-family: var(--font-header);
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
+  .steps {
+    font-size: 0.95rem;
+    color: var(--brown);
+    line-height: 1.8;
+  }
+  .print-hint {
+    position: fixed;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--ink);
+    color: var(--cream);
+    border-radius: 30px;
+    padding: 10px 22px;
+    font-size: 0.9rem;
+  }
+  @media print {
+    body { background: white; padding: 0; }
+    .sign { box-shadow: none; }
+    .print-hint { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="sign">
+  <img src="assets/beebee-logo.png" alt="BeeBee's Doodle Booth logo" class="sign-logo">
+  <h1>BeeBee's Doodle Booth</h1>
+  <div class="tagline">Hand-drawn with love, one doodle at a time ✨</div>
+  <div class="qr-frame">
+    <img src="assets/qr-beebeedoodles.png" alt="QR code for beebeedoodles.com">
+  </div>
+  <div class="cta">📱 Scan to order your doodle!</div>
+  <div class="url">beebeedoodles.com</div>
+  <p class="steps">
+    🎨 Pick your portrait &nbsp;·&nbsp; 🛒 Order in seconds &nbsp;·&nbsp; 🐝 We'll call your number when it's ready
+  </p>
+</div>
+
+<div class="print-hint">Press ⌘P to print this sign</div>
+
+</body>
+</html>
