@@ -155,6 +155,32 @@
     paint-order: normal;
   }
   .cart-nav-btn::after { display: none !important; }
+  .cart-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .booth-tools { display: flex; gap: 8px; }
+  .booth-tool {
+    width: 26px;
+    height: 26px;
+    background: white;
+    border: 2px solid var(--ink);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    line-height: 1;
+    box-shadow: 2px 2px 0 var(--ink);
+    text-decoration: none;
+    text-shadow: none !important;
+    -webkit-text-stroke: 0 !important;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .booth-tool:hover { transform: translate(-1px, -1px); box-shadow: 3px 3px 0 var(--ink); }
+  .booth-tool::after { display: none !important; }
   .cart-count {
     display: inline-flex;
     align-items: center;
@@ -1402,7 +1428,13 @@
     <li><a href="#events">Events</a></li>
     <li><a href="#contact">Contact</a></li>
     <li><a href="#about">About Me</a></li>
-    <li class="cart-nav-item"><a href="#" class="cart-nav-btn" onclick="event.preventDefault(); openCart()">🛒 Cart <span class="cart-count" id="cartCount">0</span></a></li>
+    <li class="cart-nav-item">
+      <a href="#" class="cart-nav-btn" onclick="event.preventDefault(); openCart()">🛒 Cart <span class="cart-count" id="cartCount">0</span></a>
+      <div class="booth-tools">
+        <a href="kiosk.html" class="booth-tool" title="Booth Kiosk — tablet ordering" aria-label="Booth kiosk">🖥️</a>
+        <a href="sign.html" class="booth-tool" title="Printable QR sign" aria-label="Printable QR sign">🖨️</a>
+      </div>
+    </li>
   </ul>
 </nav>
 
