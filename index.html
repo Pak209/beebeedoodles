@@ -461,6 +461,17 @@
     display: block;
     margin-bottom: 12px;
   }
+  .hero-art-image {
+    display: block;
+    width: 100%;
+    height: 145px;
+    object-fit: cover;
+    object-position: center;
+    border: 2.5px solid var(--ink);
+    border-radius: 18px;
+    margin-bottom: 16px;
+    background: white;
+  }
   .hero-art-label {
     font-family: var(--font-header);
     font-size: 1.4rem;
@@ -572,6 +583,13 @@
   .product-gallery-img:nth-child(2) { animation-delay: 3s; }
   .product-gallery-img:nth-child(3) { animation-delay: 6s; }
   .product-gallery-img:nth-child(4) { animation-delay: 9s; }
+  .product-gallery.single .product-gallery-img {
+    opacity: 1;
+    animation: none;
+  }
+  .product-gallery.single .gallery-dots {
+    display: none;
+  }
   .gallery-dots {
     position: absolute;
     left: 50%;
@@ -1040,6 +1058,12 @@
     transition: transform 0.2s, box-shadow 0.2s;
   }
   .social-pill:hover { transform: translate(-2px,-2px); box-shadow: 5px 5px 0 var(--ink); }
+  .social-icon {
+    width: 22px;
+    height: 22px;
+    flex: 0 0 auto;
+    stroke: currentColor;
+  }
 
   /* ===== EVENTS ===== */
   #events { background: var(--yellow); }
@@ -1212,6 +1236,57 @@
   .footer-links a:hover { opacity: 1; }
   .footer-copy { font-size: 0.85rem; opacity: 0.5; }
 
+  /* ===== ORDER SUCCESS ===== */
+  .success-card {
+    background: var(--cream);
+    border: 3px solid var(--ink);
+    border-radius: 28px;
+    box-shadow: 10px 10px 0 var(--ink);
+    max-width: 440px;
+    width: 100%;
+    padding: 40px 32px;
+    text-align: center;
+    transform: scale(0.9);
+    transition: transform 0.25s cubic-bezier(.34,1.56,.64,1);
+  }
+  .overlay.open .success-card { transform: scale(1); }
+  .success-emoji { font-size: 3.5rem; display: block; margin-bottom: 10px; }
+  .success-title {
+    font-family: var(--font-header);
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--header-soft);
+    -webkit-text-stroke: 0.8px var(--header-border);
+    paint-order: stroke fill;
+    text-shadow: var(--header-shadow);
+    margin-bottom: 14px;
+  }
+  .success-number {
+    font-family: var(--font-header);
+    font-size: 2.4rem;
+    font-weight: 700;
+    background: var(--yellow);
+    border: 2.5px solid var(--ink);
+    border-radius: 18px;
+    padding: 10px 24px;
+    display: inline-block;
+    box-shadow: 4px 4px 0 var(--ink);
+    margin-bottom: 18px;
+    letter-spacing: 0.06em;
+  }
+  .success-text { font-size: 0.95rem; line-height: 1.7; color: var(--brown); margin-bottom: 16px; }
+  .success-note {
+    background: var(--mint);
+    border: 2px solid var(--ink);
+    border-radius: 14px;
+    padding: 12px 16px;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--brown);
+    margin-bottom: 20px;
+    text-align: left;
+  }
+
   /* ===== TOAST ===== */
   .toast {
     position: fixed;
@@ -1351,7 +1426,7 @@
 
   <div class="hero-art">
     <div class="hero-art-card">
-      <span class="hero-art-emoji">🐶</span>
+      <img src="assets/SignaturePortraitCustom.JPG" alt="Signature Portrait example" class="hero-art-image">
       <div class="hero-art-label">Signature Portrait</div>
       <div class="hero-art-price">Starting at $10</div>
     </div>
@@ -1429,8 +1504,21 @@
       <p>I'm a small local artist who believes every moment deserves a little art. Inspired by colorful illustration, animals, and the joy of handmade things, I pour my heart into every doodle.</p>
       <p>From signature portraits to bestie doodles, furbaby bundles, and digital keepsakes — my booth is your one-stop shop for something truly special. Come find me at markets around town!</p>
       <div class="about-socials">
-        <a href="#" class="social-pill">📸 Instagram</a>
-        <a href="#" class="social-pill">🎵 TikTok</a>
+        <a href="https://www.instagram.com/xohellobeebee?utm_source=qr" class="social-pill" target="_blank" rel="noopener noreferrer" aria-label="Follow BeeBee's Doodle Booth on Instagram">
+          <svg class="social-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="3" y="3" width="18" height="18" rx="5" stroke-width="2.4"></rect>
+            <circle cx="12" cy="12" r="4" stroke-width="2.4"></circle>
+            <circle cx="17.5" cy="6.5" r="1.25" fill="currentColor"></circle>
+          </svg>
+          Instagram
+        </a>
+        <a href="https://www.tiktok.com/@xohellobeebee?_r=1&amp;_t=ZP-97y0WqJ6W4d" class="social-pill" target="_blank" rel="noopener noreferrer" aria-label="Follow BeeBee's Doodle Booth on TikTok">
+          <svg class="social-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M14.5 4v10.1a4.6 4.6 0 1 1-4-4.56" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path>
+            <path d="M14.5 4c.62 2.58 2.17 4.02 4.5 4.3" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path>
+          </svg>
+          TikTok
+        </a>
         <a href="#" class="social-pill">🛍️ Etsy Shop</a>
       </div>
     </div>
@@ -1484,7 +1572,7 @@
   </div>
   <div class="contact-wrap">
     <div class="contact-note">
-      🐾 <strong>For pet portraits:</strong> please email a clear photo of your furry friend along with their name to <strong>beebeesdoodlebooth@gmail.com</strong> after placing your order!
+      🐾 <strong>For pet portraits:</strong> please email a clear photo of your furry friend along with their name to <a href="mailto:XOhellobeebee@gmail.com"><strong>XOhellobeebee@gmail.com</strong></a> after placing your order!
     </div>
     <input class="contact-field" placeholder="Your Name" type="text" />
     <input class="contact-field" placeholder="Your Email" type="email" />
@@ -1546,17 +1634,35 @@
     <div class="checkout-fields" id="checkoutFields">
       <input class="checkout-field" id="checkoutName" placeholder="Your name" type="text">
       <input class="checkout-field" id="checkoutEmail" placeholder="Email or phone" type="text">
-      <input class="checkout-field" id="checkoutEvent" placeholder="Pickup event / date, if known" type="text">
+      <select class="checkout-field" id="checkoutEvent">
+        <option value="">Pickup event — not sure yet</option>
+      </select>
       <textarea class="checkout-field" id="checkoutNotes" placeholder="Notes, pet name, delivery preference, or photo details"></textarea>
       <button class="modal-add-btn" onclick="sendOrderRequest()">Send Order Request</button>
     </div>
   </div>
 </aside>
 
+<!-- Order Success Overlay -->
+<div class="overlay" id="successOverlay">
+  <div class="success-card">
+    <span class="success-emoji">🎉</span>
+    <h3 class="success-title">Order received!</h3>
+    <div class="success-number" id="successOrderNumber">BB-0000</div>
+    <p class="success-text">Save this number — BeeBee has your order in her queue and will confirm by text or email.</p>
+    <p class="success-note">🐾 Ordering a portrait? Email a clear photo of your subject to <a href="mailto:XOhellobeebee@gmail.com"><strong>XOhellobeebee@gmail.com</strong></a> with your order number.</p>
+    <button class="modal-add-btn" onclick="closeSuccess()">Done ✨</button>
+  </div>
+</div>
+
 <!-- Toast -->
 <div class="toast" id="toast"></div>
 
 <script>
+// Google Apps Script web app URL — orders POST here and land in the BeeBee Orders sheet.
+// Leave empty to fall back to an email order request.
+const ORDER_ENDPOINT = '';
+
 const products = [
   {
     id: 1,
@@ -1633,6 +1739,9 @@ const products = [
     price: "+$10",
     desc: "Add a digital version of your portrait, delivered by text or email within 24–48 hours.",
     emoji: "📱",
+    gallery: [
+      "assets/DigitalJpegCopyRef.jpg",
+    ],
     bg: "lavender",
     badge: "Digital",
     cat: "Digital Version",
@@ -1658,7 +1767,7 @@ const events = [
 function renderProductVisual(p) {
   if (!p.gallery) return `<span class="product-img">${p.emoji}</span>`;
   return `
-    <div class="product-gallery" aria-label="${p.name} portrait examples">
+    <div class="product-gallery ${p.gallery.length === 1 ? 'single' : ''}" aria-label="${p.name} portrait examples">
       ${p.gallery.map((src, index) => `<img src="${src}" alt="${p.name} reference ${index + 1}" class="product-gallery-img">`).join('')}
       <div class="gallery-dots" aria-hidden="true">
         ${p.gallery.map(() => '<span class="gallery-dot"></span>').join('')}
@@ -1716,6 +1825,19 @@ events.forEach(e => {
     </div>
   `;
 });
+
+// Pickup event choices in checkout
+const checkoutEventSelect = document.getElementById('checkoutEvent');
+events.forEach(e => {
+  const opt = document.createElement('option');
+  opt.value = `${e.name} — ${e.date}`;
+  opt.textContent = `${e.name} — ${e.date}`;
+  checkoutEventSelect.appendChild(opt);
+});
+const otherEventOpt = document.createElement('option');
+otherEventOpt.value = 'Other (see notes)';
+otherEventOpt.textContent = 'Other / different date (tell us in notes)';
+checkoutEventSelect.appendChild(otherEventOpt);
 
 // Modal
 function openModal(id) {
@@ -1878,15 +2000,61 @@ function buildOrderSummary() {
   return [...lines, '', `Total: ${formatPrice(total)}`].join('\n');
 }
 
-function sendOrderRequest() {
+async function sendOrderRequest() {
   if (!cart.length) {
     showToast('Your cart is empty');
     return;
   }
   const name = document.getElementById('checkoutName').value.trim();
   const contact = document.getElementById('checkoutEmail').value.trim();
-  const event = document.getElementById('checkoutEvent').value.trim();
+  const pickupEvent = document.getElementById('checkoutEvent').value;
   const notes = document.getElementById('checkoutNotes').value.trim();
+
+  if (!name || !contact) {
+    showToast('Please add your name and contact info 💌');
+    return;
+  }
+
+  if (!ORDER_ENDPOINT) {
+    sendOrderByEmail(name, contact, pickupEvent, notes);
+    return;
+  }
+
+  const btn = document.querySelector('#checkoutFields .modal-add-btn');
+  btn.disabled = true;
+  btn.textContent = 'Sending your order… 🐝';
+  try {
+    const res = await fetch(ORDER_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({
+        source: 'website',
+        name,
+        contact,
+        pickupEvent,
+        notes,
+        total: cart.reduce((sum, item) => sum + item.total, 0),
+        items: cart.map(item => ({ name: item.name, price: item.total, options: item.selections }))
+      })
+    });
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error || 'Order failed');
+    cart = [];
+    renderCart();
+    ['checkoutName', 'checkoutEmail', 'checkoutEvent', 'checkoutNotes'].forEach(id => {
+      document.getElementById(id).value = '';
+    });
+    closeCart();
+    showOrderSuccess(data.orderNumber);
+  } catch (err) {
+    showToast("Order didn't go through — try again or email XOhellobeebee@gmail.com");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Send Order Request';
+  }
+}
+
+function sendOrderByEmail(name, contact, pickupEvent, notes) {
   const body = [
     'Hi BeeBee, I would like to place this doodle order:',
     '',
@@ -1894,11 +2062,20 @@ function sendOrderRequest() {
     '',
     `Name: ${name || '[your name]'}`,
     `Email or phone: ${contact || '[your contact]'}`,
-    `Pickup event / date: ${event || '[not sure yet]'}`,
+    `Pickup event / date: ${pickupEvent || '[not sure yet]'}`,
     `Notes: ${notes || '[none]'}`
   ].join('\n');
-  window.location.href = `mailto:beebeesdoodlebooth@gmail.com?subject=${encodeURIComponent('BeeBee Doodle Order Request')}&body=${encodeURIComponent(body)}`;
+  window.location.href = `mailto:XOhellobeebee@gmail.com?subject=${encodeURIComponent('BeeBee Doodle Order Request')}&body=${encodeURIComponent(body)}`;
   showToast('Opening your email order request');
+}
+
+function showOrderSuccess(orderNumber) {
+  document.getElementById('successOrderNumber').textContent = orderNumber;
+  document.getElementById('successOverlay').classList.add('open');
+}
+
+function closeSuccess() {
+  document.getElementById('successOverlay').classList.remove('open');
 }
 
 // Toast
