@@ -154,7 +154,9 @@ function listEvents_(publishedOnly) {
 
 function eventDateValue_(value) {
   if (Object.prototype.toString.call(value) === '[object Date]' && !isNaN(value.getTime())) {
-    return Utilities.formatDate(value, Session.getScriptTimeZone(), 'yyyy-MM-dd');
+    // Format in the spreadsheet's own timezone — date cells are stored at midnight
+    // spreadsheet-local, so any other zone shifts the date by a day.
+    return Utilities.formatDate(value, SpreadsheetApp.getActiveSpreadsheet().getSpreadsheetTimeZone(), 'yyyy-MM-dd');
   }
   return String(value);
 }
