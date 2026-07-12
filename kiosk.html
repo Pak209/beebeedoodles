@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Order Here — BeeBee's Doodle Booth</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FFF8F0;
+    --blush: #FFD6D6;
+    --mint: #C5EAD8;
+    --lavender: #DDD0F5;
+    --yellow: #FFE9A0;
+    --peach: #FFB89A;
+    --sky: #C2E4F7;
+    --ink: #2D2A26;
+    --brown: #7A5C42;
+    --accent: #FF8FA3;
+    --accent2: #A78BFA;
+    --font-header: "Playfair Display", Georgia, "Times New Roman", serif;
+    --font-text: "Montserrat", "Avenir Next", Avenir, "Helvetica Neue", Arial, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font-text);
+    font-weight: 600;
+    background: linear-gradient(135deg, var(--blush) 0%, var(--cream) 45%, var(--mint) 100%);
+    color: var(--ink);
+    min-height: 100vh;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  .kiosk-wrap {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .kiosk-head {
+    text-align: center;
+    margin-bottom: 26px;
+  }
+  .kiosk-logo {
+    width: 90px;
+    height: 90px;
+    object-fit: contain;
+  }
+  .kiosk-title {
+    font-family: var(--font-header);
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 700;
+    color: white;
+    -webkit-text-stroke: 1px var(--brown);
+    paint-order: stroke fill;
+    text-shadow: 0 3px 14px rgba(122, 92, 66, 0.24);
+  }
+  .kiosk-sub {
+    font-family: var(--font-header);
+    font-size: 1.25rem;
+    color: var(--brown);
+    margin-top: 6px;
+  }
+
+  .screen { display: none; flex: 1; flex-direction: column; }
+  .screen.active { display: flex; animation: fade-in 0.3s ease; }
+  @keyframes fade-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+  .big-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 22px;
+  }
+  .big-card {
+    background: white;
+    border: 3px solid var(--ink);
+    border-radius: 26px;
+    box-shadow: 6px 6px 0 var(--ink);
+    padding: 30px 22px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .big-card:active { transform: translate(3px, 3px); box-shadow: 3px 3px 0 var(--ink); }
+  .big-card .emoji { font-size: 3.6rem; display: block; margin-bottom: 12px; }
+  .big-card .art {
+    width: 100%;
+    height: 175px;
+    object-fit: cover;
+    object-position: center;
+    border: 2.5px solid var(--ink);
+    border-radius: 18px;
+    display: block;
+    margin-bottom: 14px;
+    background: var(--cream);
+  }
+  .big-card .name { font-family: var(--font-header); font-size: 1.6rem; font-weight: 700; margin-bottom: 6px; }
+  .big-card .desc { font-size: 0.9rem; color: var(--brown); line-height: 1.5; margin-bottom: 12px; }
+  .big-card .price {
+    display: inline-block;
+    background: var(--yellow);
+    border: 2px solid var(--ink);
+    border-radius: 20px;
+    padding: 5px 18px;
+    font-family: var(--font-header);
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+
+  .panel {
+    background: white;
+    border: 3px solid var(--ink);
+    border-radius: 26px;
+    box-shadow: 6px 6px 0 var(--ink);
+    padding: 30px 26px;
+  }
+  .panel h2 {
+    font-family: var(--font-header);
+    font-size: 1.9rem;
+    margin-bottom: 20px;
+  }
+  .opt-label {
+    font-family: var(--font-header);
+    font-size: 1.25rem;
+    font-weight: 700;
+    display: block;
+    margin: 18px 0 10px;
+  }
+  .kiosk-select, .kiosk-field {
+    width: 100%;
+    padding: 16px 18px;
+    border: 3px solid var(--ink);
+    border-radius: 16px;
+    font-family: var(--font-text);
+    font-size: 1.15rem;
+    font-weight: 600;
+    background: var(--cream);
+  }
+  textarea.kiosk-field { min-height: 110px; resize: none; }
+  .kiosk-field { margin-bottom: 16px; }
+
+  .btn-row { display: flex; gap: 14px; margin-top: 26px; flex-wrap: wrap; }
+  .kiosk-btn {
+    flex: 1;
+    min-width: 180px;
+    padding: 20px 26px;
+    border-radius: 60px;
+    font-family: var(--font-header);
+    font-size: 1.45rem;
+    font-weight: 700;
+    cursor: pointer;
+    border: 3px solid var(--ink);
+    box-shadow: 5px 5px 0 var(--ink);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .kiosk-btn:active { transform: translate(3px, 3px); box-shadow: 2px 2px 0 var(--ink); }
+  .kiosk-btn.primary { background: var(--accent); color: white; }
+  .kiosk-btn.secondary { background: white; color: var(--ink); }
+  .kiosk-btn:disabled { opacity: 0.55; }
+
+  .order-list { margin-bottom: 8px; }
+  .order-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 14px;
+    border-bottom: 2px dashed var(--lavender);
+    padding: 12px 0;
+  }
+  .order-line .what { font-size: 1.05rem; line-height: 1.5; }
+  .order-line .opts { font-size: 0.85rem; color: var(--brown); line-height: 1.5; }
+  .order-line .amt { font-family: var(--font-header); font-size: 1.2rem; white-space: nowrap; }
+  .order-line .drop {
+    border: 0;
+    background: transparent;
+    color: var(--brown);
+    font-size: 0.85rem;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  .order-total {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-header);
+    font-size: 1.7rem;
+    font-weight: 700;
+    padding-top: 14px;
+  }
+
+  .success-center { text-align: center; padding: 30px 10px; }
+  .success-center .emoji { font-size: 4.5rem; display: block; margin-bottom: 12px; }
+  .success-center h2 { font-family: var(--font-header); font-size: 2.3rem; margin-bottom: 18px; }
+  .order-num {
+    font-family: var(--font-header);
+    font-size: 3.4rem;
+    font-weight: 700;
+    background: var(--yellow);
+    border: 3px solid var(--ink);
+    border-radius: 22px;
+    box-shadow: 6px 6px 0 var(--ink);
+    display: inline-block;
+    padding: 14px 38px;
+    margin-bottom: 22px;
+    letter-spacing: 0.06em;
+  }
+  .success-center p { font-size: 1.1rem; color: var(--brown); line-height: 1.7; margin-bottom: 10px; }
+  .reset-note { font-size: 0.9rem; color: var(--brown); opacity: 0.8; margin-top: 18px; }
+
+  .step-dots { display: flex; gap: 8px; justify-content: center; margin-bottom: 22px; }
+  .step-dot {
+    width: 12px; height: 12px; border-radius: 50%;
+    border: 2px solid var(--ink);
+    background: white;
+  }
+  .step-dot.on { background: var(--accent); }
+</style>
+</head>
+<body>
+
+<div class="kiosk-wrap">
+  <header class="kiosk-head">
+    <img src="assets/beebee-logo.png" alt="BeeBee's Doodle Booth" class="kiosk-logo">
+    <div class="kiosk-title">BeeBee's Doodle Booth</div>
+    <div class="kiosk-sub" id="kioskSub">Tap a doodle to start your order! ✨</div>
+  </header>
+
+  <div class="step-dots" id="stepDots" aria-hidden="true">
+    <span class="step-dot on"></span><span class="step-dot"></span><span class="step-dot"></span><span class="step-dot"></span>
+  </div>
+
+  <!-- Step 1: pick item -->
+  <section class="screen active" id="screen-pick">
+    <div class="big-grid" id="pickGrid"></div>
+  </section>
+
+  <!-- Step 2: options -->
+  <section class="screen" id="screen-options">
+    <div class="panel">
+      <h2 id="optTitle">Options</h2>
+      <div id="optFields"></div>
+      <div class="btn-row">
+        <button class="kiosk-btn secondary" onclick="goTo('pick')">← Back</button>
+        <button class="kiosk-btn primary" onclick="addItem()">Add to Order 🛒</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Step 3: your info -->
+  <section class="screen" id="screen-info">
+    <div class="panel">
+      <h2>Almost done! Who's this for?</h2>
+      <div class="order-list" id="miniOrderList"></div>
+      <div class="order-total"><span>Total</span><span id="miniTotal">$0</span></div>
+      <span class="opt-label">Your name</span>
+      <input class="kiosk-field" id="kName" type="text" autocomplete="off">
+      <span class="opt-label">Phone or email (for pickup updates)</span>
+      <input class="kiosk-field" id="kContact" type="text" autocomplete="off">
+      <span class="opt-label">Notes — pet name, colors, details</span>
+      <textarea class="kiosk-field" id="kNotes"></textarea>
+      <div class="btn-row">
+        <button class="kiosk-btn secondary" onclick="goTo('pick'); setSub('Add another doodle, or tap your order below ✨')">＋ Add Another</button>
+        <button class="kiosk-btn primary" id="submitBtn" onclick="submitKioskOrder()">Place Order 🎨</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Step 4: success -->
+  <section class="screen" id="screen-done">
+    <div class="panel success-center">
+      <span class="emoji">🎉</span>
+      <h2>You're in the queue!</h2>
+      <div class="order-num" id="kioskOrderNum">BB-0000</div>
+      <p><strong>Show this number to BeeBee</strong> — she'll call it when your doodle is ready.</p>
+      <p>🐾 Portrait orders: show or send your photo to <strong>beebeesdoodlebooth@gmail.com</strong></p>
+      <div class="btn-row">
+        <button class="kiosk-btn primary" onclick="resetKiosk()">Done — Next Customer 🐝</button>
+      </div>
+      <div class="reset-note" id="resetNote"></div>
+    </div>
+  </section>
+</div>
+
+<script>
+// Google Apps Script web app URL — same endpoint as the main site.
+const ORDER_ENDPOINT = '';
+
+const products = [
+  {
+    id: 1,
+    name: "Signature Portrait",
+    price: "$10",
+    desc: "Quick hand-drawn doodle portrait, pink cheeks included.",
+    emoji: "🐶",
+    img: "assets/SignaturePortraitCustom.JPG",
+    options: [
+      { label: "Frame Design", choices: ["Classic", "Bow", "Stars", "Wavy", "Floral"] },
+      { label: "Extra Person", choices: ["No extra person", "Add 1 extra person +$5"] },
+      { label: "Pet", choices: ["No pet add-on", "Add 1 pet +$5"] },
+      { label: "Additional Color", choices: ["No additional color", "Pink +$3", "Red +$3", "Orange +$3", "Yellow +$3", "Green +$3", "Blue +$3", "Purple +$3"] },
+      { label: "Digital Copy", choices: ["No digital copy", "Add digital JPEG copy +$10"] },
+    ]
+  },
+  {
+    id: 5,
+    name: "Bestie Doodle",
+    price: "$15",
+    desc: "Bundle portrait for 2 people, 2 colors included.",
+    emoji: "👯",
+    img: "assets/PortraitRef1.jpeg",
+    options: [
+      { label: "Frame Design", choices: ["Classic", "Bow", "Stars", "Wavy", "Floral"] },
+      { label: "Digital Copy", choices: ["No digital copy", "Add digital JPEG copy +$10"] },
+    ]
+  },
+  {
+    id: 6,
+    name: "Furbaby Bundle",
+    price: "$15",
+    desc: "Bundle portrait for 1 person + 1 pet, 2 colors included.",
+    emoji: "🐾",
+    img: "assets/PetRef1.jpeg",
+    options: [
+      { label: "Frame Design", choices: ["Classic", "Bow", "Stars", "Wavy", "Floral"] },
+      { label: "Digital Copy", choices: ["No digital copy", "Add digital JPEG copy +$10"] },
+    ]
+  },
+  {
+    id: 7,
+    name: "Digital JPEG Copy",
+    price: "+$10",
+    desc: "Digital version of your portrait, sent within 24–48 hours.",
+    emoji: "📱",
+    img: "assets/DigitalJpegCopyRef.jpg",
+    options: [
+      { label: "Delivery", choices: ["Text message", "Email"] },
+      { label: "Add to", choices: ["Signature Portrait", "Bestie Doodle", "Furbaby Bundle"] },
+    ]
+  }
+];
+
+let currentProduct = null;
+let order = [];
+
+function parsePrice(v) { const m = String(v).match(/\$([0-9]+)/); return m ? Number(m[1]) : 0; }
+function addonPrice(v) { const m = String(v).match(/\+\$([0-9]+)/); return m ? Number(m[1]) : 0; }
+
+// Step 1: product grid
+const pickGrid = document.getElementById('pickGrid');
+products.forEach(p => {
+  const card = document.createElement('div');
+  card.className = 'big-card';
+  card.innerHTML = `${p.img ? `<img src="${p.img}" alt="${p.name} example" class="art">` : `<span class="emoji">${p.emoji}</span>`}<div class="name">${p.name}</div><div class="desc">${p.desc}</div><span class="price">${p.price}</span>`;
+  card.onclick = () => openOptions(p.id);
+  pickGrid.appendChild(card);
+});
+
+function setSub(text) { document.getElementById('kioskSub').textContent = text; }
+
+const SCREENS = ['pick', 'options', 'info', 'done'];
+function goTo(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+  document.querySelectorAll('.step-dot').forEach((d, i) => d.classList.toggle('on', i <= SCREENS.indexOf(name)));
+  window.scrollTo({ top: 0 });
+}
+
+function openOptions(id) {
+  currentProduct = products.find(p => p.id === id);
+  document.getElementById('optTitle').textContent = `${currentProduct.emoji} ${currentProduct.name} — ${currentProduct.price}`;
+  document.getElementById('optFields').innerHTML = currentProduct.options.map(opt => `
+    <span class="opt-label">${opt.label}</span>
+    <select class="kiosk-select" data-label="${opt.label}">
+      ${opt.choices.map(c => `<option>${c}</option>`).join('')}
+    </select>
+  `).join('');
+  setSub('Pick your options 🎨');
+  goTo('options');
+}
+
+function addItem() {
+  const selections = Array.from(document.querySelectorAll('#optFields .kiosk-select'))
+    .map(s => ({ label: s.dataset.label, value: s.value }));
+  const total = parsePrice(currentProduct.price) + selections.reduce((sum, s) => sum + addonPrice(s.value), 0);
+  order.push({ id: Date.now(), name: currentProduct.name, emoji: currentProduct.emoji, selections, total });
+  renderMiniOrder();
+  setSub("Almost there — just need your name! 💌");
+  goTo('info');
+}
+
+function dropItem(id) {
+  order = order.filter(item => item.id !== id);
+  if (!order.length) { goTo('pick'); setSub('Tap a doodle to start your order! ✨'); }
+  renderMiniOrder();
+}
+
+function renderMiniOrder() {
+  const list = document.getElementById('miniOrderList');
+  list.innerHTML = order.map(item => `
+    <div class="order-line">
+      <div>
+        <div class="what">${item.emoji} <strong>${item.name}</strong> <button class="drop" onclick="dropItem(${item.id})">remove</button></div>
+        <div class="opts">${item.selections.filter(s => s.value && !/^No /.test(s.value)).map(s => `${s.label}: ${s.value}`).join(' · ')}</div>
+      </div>
+      <div class="amt">$${item.total}</div>
+    </div>
+  `).join('');
+  document.getElementById('miniTotal').textContent = '$' + order.reduce((sum, item) => sum + item.total, 0);
+}
+
+async function submitKioskOrder() {
+  const name = document.getElementById('kName').value.trim();
+  const contact = document.getElementById('kContact').value.trim();
+  const notes = document.getElementById('kNotes').value.trim();
+  if (!order.length) { goTo('pick'); return; }
+  if (!name || !contact) { setSub('Please add a name and phone/email so we can find you! 💌'); return; }
+  if (!ORDER_ENDPOINT) { setSub('Kiosk is not connected to the order sheet yet — ask BeeBee 🐝'); return; }
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Sending… 🐝';
+  try {
+    const res = await fetch(ORDER_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({
+        source: 'kiosk',
+        name,
+        contact,
+        pickupEvent: 'At the booth (today)',
+        notes,
+        total: order.reduce((sum, item) => sum + item.total, 0),
+        items: order.map(item => ({ name: item.name, price: item.total, options: item.selections }))
+      })
+    });
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error || 'Order failed');
+    document.getElementById('kioskOrderNum').textContent = data.orderNumber;
+    setSub('Order placed! 🎉');
+    goTo('done');
+    startResetCountdown();
+  } catch (err) {
+    setSub("Hmm, that didn't send — check the wifi and tap Place Order again 🙏");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Place Order 🎨';
+  }
+}
+
+// Success screen auto-resets so the kiosk is ready for the next customer.
+let resetTimer = null;
+let countdownTimer = null;
+function startResetCountdown() {
+  let left = 45;
+  const note = document.getElementById('resetNote');
+  note.textContent = `Starts a new order in ${left}s`;
+  countdownTimer = setInterval(() => {
+    left -= 1;
+    note.textContent = `Starts a new order in ${left}s`;
+  }, 1000);
+  resetTimer = setTimeout(resetKiosk, 45000);
+}
+
+function resetKiosk() {
+  clearTimeout(resetTimer);
+  clearInterval(countdownTimer);
+  order = [];
+  currentProduct = null;
+  ['kName', 'kContact', 'kNotes'].forEach(id => document.getElementById(id).value = '');
+  renderMiniOrder();
+  setSub('Tap a doodle to start your order! ✨');
+  goTo('pick');
+}
+
+// Idle safety net: abandoned mid-orders clear after 3 minutes without a tap.
+let idleTimer = null;
+function bumpIdle() {
+  clearTimeout(idleTimer);
+  idleTimer = setTimeout(() => {
+    if (!document.getElementById('screen-pick').classList.contains('active')) resetKiosk();
+  }, 180000);
+}
+['click', 'touchstart', 'keydown'].forEach(evt => document.addEventListener(evt, bumpIdle, { passive: true }));
+bumpIdle();
+</script>
+
+</body>
+</html>
