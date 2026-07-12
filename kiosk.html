@@ -279,7 +279,7 @@
       <h2>You're in the queue!</h2>
       <div class="order-num" id="kioskOrderNum">BB-0000</div>
       <p><strong>Show this number to BeeBee</strong> — she'll call it when your doodle is ready.</p>
-      <p>🐾 Portrait orders: show or send your photo to <strong>beebeesdoodlebooth@gmail.com</strong></p>
+      <p>🐾 Portrait orders: show or send your photo to <strong>XOhellobeebee@gmail.com</strong></p>
       <div class="btn-row">
         <button class="kiosk-btn primary" onclick="resetKiosk()">Done — Next Customer 🐝</button>
       </div>
@@ -288,9 +288,10 @@
   </section>
 </div>
 
+<script src="site-config.js"></script>
 <script>
 // Google Apps Script web app URL — same endpoint as the main site.
-const ORDER_ENDPOINT = '';
+const ORDER_ENDPOINT = window.BEEBEE_CONFIG?.apiUrl || '';
 
 const products = [
   {

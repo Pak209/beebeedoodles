@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Market Manager - BeeBee's Doodle Booth</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<script src="site-config.js"></script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<style>
+:root{--cream:#fff8f0;--blush:#ffd6d6;--mint:#c5ead8;--lavender:#ddd0f5;--yellow:#ffe9a0;--ink:#2d2a26;--brown:#7a5c42;--accent:#ff8fa3;--danger:#b84c5c}
+*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font-family:Montserrat,"Avenir Next",sans-serif;letter-spacing:.08em;min-height:100vh}
+header{background:var(--lavender);border-bottom:3px solid var(--ink);padding:18px clamp(20px,5vw,64px);display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{display:flex;align-items:center;gap:12px;font:700 1.4rem "Playfair Display",serif;letter-spacing:0}.brand img{width:54px;height:54px;object-fit:contain}.site-link{color:var(--ink);font-size:.82rem}
+main{width:min(1080px,calc(100% - 32px));margin:0 auto;padding:52px 0 80px}.intro{display:flex;justify-content:space-between;align-items:end;gap:24px;margin-bottom:32px}.intro h1{font:700 clamp(2.2rem,5vw,4.2rem)/1.05 "Playfair Display",serif;letter-spacing:0;margin:0 0 10px}.intro p{color:var(--brown);line-height:1.7;margin:0;max-width:620px}.status{font-size:.75rem;background:white;border:2px solid var(--ink);padding:9px 13px;border-radius:7px;white-space:nowrap}
+.auth-panel,.editor{background:white;border:3px solid var(--ink);box-shadow:7px 7px 0 var(--ink);padding:30px;border-radius:8px}.auth-panel{max-width:560px}.auth-panel h2,.editor h2{font:700 1.7rem "Playfair Display",serif;letter-spacing:0;margin:0 0 12px}.auth-panel p{color:var(--brown);line-height:1.7;font-size:.9rem}.setup{background:var(--yellow);border:2px solid var(--ink);padding:14px;line-height:1.6;font-size:.78rem;margin-top:18px}.hidden{display:none!important}
+.toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:22px}.btn{border:2px solid var(--ink);background:var(--mint);color:var(--ink);font:700 .9rem Montserrat,sans-serif;letter-spacing:.06em;padding:12px 18px;border-radius:7px;box-shadow:3px 3px 0 var(--ink);cursor:pointer}.btn:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}.btn.secondary{background:white}.btn.danger{background:var(--blush);color:var(--danger)}.btn:disabled{opacity:.5;cursor:not-allowed}
+.event-list{display:grid;gap:14px}.event-row{border:2px solid var(--ink);padding:18px;display:grid;grid-template-columns:130px 1fr auto;gap:18px;align-items:center;border-radius:7px;background:var(--cream)}.event-date{font:700 1.05rem "Playfair Display",serif;letter-spacing:0}.event-name{font:700 1.18rem "Playfair Display",serif;letter-spacing:0}.event-meta{font-size:.76rem;color:var(--brown);line-height:1.6;margin-top:5px}.event-actions{display:flex;gap:8px}.icon-btn{width:42px;height:42px;border:2px solid var(--ink);background:white;border-radius:7px;cursor:pointer;font-size:1rem}.draft{opacity:.58}.empty{padding:38px;text-align:center;color:var(--brown);border:2px dashed var(--brown)}
+.modal{position:fixed;inset:0;background:rgba(45,42,38,.55);display:grid;place-items:center;padding:20px;z-index:10}.form-card{width:min(620px,100%);background:var(--cream);border:3px solid var(--ink);box-shadow:8px 8px 0 var(--ink);padding:30px;border-radius:8px}.form-card h2{font:700 1.8rem "Playfair Display",serif;letter-spacing:0;margin:0 0 22px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.field{display:grid;gap:7px;font-size:.75rem}.field.wide{grid-column:1/-1}.field input,.field select{width:100%;border:2px solid var(--ink);background:white;padding:12px;font:600 .9rem Montserrat,sans-serif;border-radius:6px}.check{display:flex;align-items:center;gap:10px}.form-actions{display:flex;justify-content:flex-end;gap:12px;margin-top:24px}.message{position:fixed;right:22px;bottom:22px;background:var(--ink);color:white;padding:13px 18px;border-radius:6px;font-size:.8rem;z-index:20}
+@media(max-width:700px){header{align-items:flex-start}.site-link{display:none}.intro{display:block}.status{display:inline-block;margin-top:18px}.auth-panel,.editor{padding:22px}.event-row{grid-template-columns:1fr}.event-actions{justify-content:flex-end}.form-grid{grid-template-columns:1fr}.field.wide{grid-column:auto}}
+</style>
+</head>
+<body>
+<header><div class="brand"><img src="assets/beebee-logo.png" alt="">BeeBee's Market Manager</div><a class="site-link" href="index.html#events">View public events</a></header>
+<main>
+  <div class="intro"><div><h1>Upcoming markets</h1><p>Add markets and workshops here. Published events appear on the website automatically.</p></div><div class="status" id="adminStatus">Signed out</div></div>
+  <section class="auth-panel" id="authPanel">
+    <h2>Sign in to edit</h2><p>Use the BeeBee customer-support Google account. Other Google accounts will be rejected by the server.</p>
+    <div id="googleButton"></div>
+    <div class="setup hidden" id="setupNotice">Admin setup is not connected yet. Add the Apps Script URL and Google client ID to <strong>site-config.js</strong>.</div>
+  </section>
+  <section class="editor hidden" id="editor">
+    <div class="toolbar"><h2>Market schedule</h2><button class="btn" type="button" onclick="openEventForm()">+ Add event</button></div>
+    <div class="event-list" id="eventList"></div>
+  </section>
+</main>
+
+<div class="modal hidden" id="eventModal" role="dialog" aria-modal="true" aria-labelledby="formTitle">
+  <form class="form-card" id="eventForm">
+    <h2 id="formTitle">Add event</h2><input type="hidden" id="eventId">
+    <div class="form-grid">
+      <label class="field"><span>Date</span><input id="eventDate" type="date" required></label>
+      <label class="field"><span>Type</span><select id="eventType"><option>Market</option><option>Workshop</option></select></label>
+      <label class="field wide"><span>Event name</span><input id="eventName" maxlength="200" required></label>
+      <label class="field wide"><span>Location</span><input id="eventLocation" maxlength="300" required></label>
+      <label class="field"><span>Display order</span><input id="eventOrder" type="number" min="0" value="0"></label>
+      <label class="field check"><input id="eventPublished" type="checkbox" checked> Publish on website</label>
+    </div>
+    <div class="form-actions"><button class="btn secondary" type="button" onclick="closeEventForm()">Cancel</button><button class="btn" id="saveButton" type="submit">Save event</button></div>
+  </form>
+</div>
+<div class="message hidden" id="message"></div>
+
+<script>
+const CONFIG = window.BEEBEE_CONFIG || {};
+const SUPPORT_EMAIL = 'xohellobeebee@gmail.com';
+let credential = '';
+let events = [];
+
+window.addEventListener('load', () => {
+  if (!CONFIG.apiUrl || !CONFIG.googleClientId) {
+    document.getElementById('setupNotice').classList.remove('hidden');
+    return;
+  }
+  google.accounts.id.initialize({ client_id: CONFIG.googleClientId, callback: handleSignIn });
+  google.accounts.id.renderButton(document.getElementById('googleButton'), { theme: 'outline', size: 'large', text: 'signin_with', shape: 'rectangular' });
+});
+
+async function handleSignIn(response) {
+  credential = response.credential;
+  try {
+    const data = await api({ action: 'admin.listEvents' });
+    events = data.events || [];
+    document.getElementById('authPanel').classList.add('hidden');
+    document.getElementById('editor').classList.remove('hidden');
+    document.getElementById('adminStatus').textContent = SUPPORT_EMAIL;
+    renderEvents();
+  } catch (error) { credential = ''; showMessage(error.message); }
+}
+
+async function api(payload) {
+  const response = await fetch(CONFIG.apiUrl, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ ...payload, credential }) });
+  const data = await response.json();
+  if (!data.ok) throw new Error(data.error || 'Request failed');
+  return data;
+}
+
+function renderEvents() {
+  const list = document.getElementById('eventList');
+  if (!events.length) { list.innerHTML = '<div class="empty">No events yet. Add the next market when it is booked.</div>'; return; }
+  list.innerHTML = events.map(event => `<article class="event-row ${event.published ? '' : 'draft'}">
+    <div class="event-date">${formatDate(event.date)}</div><div><div class="event-name">${escapeHtml(event.name)}</div><div class="event-meta">${event.type} · ${escapeHtml(event.location)} · ${event.published ? 'Published' : 'Hidden'}</div></div>
+    <div class="event-actions"><button class="icon-btn" type="button" title="Edit event" onclick="openEventForm('${event.id}')">✎</button><button class="icon-btn" type="button" title="Delete event" onclick="removeEvent('${event.id}')">×</button></div></article>`).join('');
+}
+
+function openEventForm(id = '') {
+  const event = events.find(item => item.id === id);
+  document.getElementById('formTitle').textContent = event ? 'Edit event' : 'Add event';
+  document.getElementById('eventId').value = event?.id || '';
+  document.getElementById('eventDate').value = event?.date || '';
+  document.getElementById('eventName').value = event?.name || '';
+  document.getElementById('eventLocation').value = event?.location || '';
+  document.getElementById('eventType').value = event?.type || 'Market';
+  document.getElementById('eventOrder').value = event?.sortOrder ?? events.length + 1;
+  document.getElementById('eventPublished').checked = event?.published ?? true;
+  document.getElementById('eventModal').classList.remove('hidden');
+}
+function closeEventForm() { document.getElementById('eventModal').classList.add('hidden'); }
+
+document.getElementById('eventForm').addEventListener('submit', async event => {
+  event.preventDefault(); const button = document.getElementById('saveButton'); button.disabled = true;
+  try {
+    await api({ action: 'admin.saveEvent', event: { id: document.getElementById('eventId').value, date: document.getElementById('eventDate').value, name: document.getElementById('eventName').value.trim(), location: document.getElementById('eventLocation').value.trim(), type: document.getElementById('eventType').value, sortOrder: Number(document.getElementById('eventOrder').value), published: document.getElementById('eventPublished').checked } });
+    events = (await api({ action: 'admin.listEvents' })).events || []; closeEventForm(); renderEvents(); showMessage('Event saved');
+  } catch (error) { showMessage(error.message); } finally { button.disabled = false; }
+});
+
+async function removeEvent(id) {
+  const event = events.find(item => item.id === id);
+  if (!event || !confirm(`Delete ${event.name}?`)) return;
+  try { await api({ action: 'admin.deleteEvent', id }); events = events.filter(item => item.id !== id); renderEvents(); showMessage('Event deleted'); } catch (error) { showMessage(error.message); }
+}
+function formatDate(value) { if (!value) return ''; return new Intl.DateTimeFormat('en-US',{month:'short',day:'numeric',year:'numeric',timeZone:'UTC'}).format(new Date(value + 'T00:00:00Z')); }
+function escapeHtml(value) { const div = document.createElement('div'); div.textContent = value || ''; return div.innerHTML; }
+let messageTimer; function showMessage(text) { const el = document.getElementById('message'); el.textContent = text; el.classList.remove('hidden'); clearTimeout(messageTimer); messageTimer = setTimeout(() => el.classList.add('hidden'), 4500); }
+</script>
+</body>
+</html>

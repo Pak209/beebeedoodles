@@ -1595,6 +1595,7 @@
     <a href="#about">About</a>
     <a href="#events">Events</a>
     <a href="#contact">Contact</a>
+    <a href="admin.html">Market Admin</a>
   </div>
   <div class="footer-copy">© 2025 BeeBee's Doodle Booth · All rights reserved · Made with 🎨 & ❤️</div>
 </footer>
@@ -1658,10 +1659,11 @@
 <!-- Toast -->
 <div class="toast" id="toast"></div>
 
+<script src="site-config.js"></script>
 <script>
 // Google Apps Script web app URL — orders POST here and land in the BeeBee Orders sheet.
 // Leave empty to fall back to an email order request.
-const ORDER_ENDPOINT = '';
+const ORDER_ENDPOINT = window.BEEBEE_CONFIG?.apiUrl || '';
 
 const products = [
   {
@@ -1757,7 +1759,7 @@ const products = [
 let currentProduct = null;
 let cart = [];
 
-const events = [
+let events = [
   { date: "July 12, 2025", name: "Summer Craft Fair", loc: "📍 Riverside Park, Downtown", type: "Market" },
   { date: "July 26, 2025", name: "Doodle Workshop", loc: "📍 Local Art Studio — seats limited!", type: "Workshop" },
   { date: "Aug 3, 2025", name: "Farmers Market Pop-Up", loc: "📍 Central Square Farmers Market", type: "Market" },
@@ -1815,29 +1817,63 @@ function filterShop(cat) {
 
 // Render events
 const evGrid = document.getElementById('eventsGrid');
-events.forEach(e => {
-  evGrid.innerHTML += `
+const checkoutEventSelect = document.getElementById('checkoutEvent');
+
+function safeText(value) {
+  const el = document.createElement('div');
+  el.textContent = value || '';
+  return el.innerHTML;
+}
+
+function displayEventDate(value) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value || '')) return value;
+  return new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' })
+    .format(new Date(`${value}T00:00:00Z`));
+}
+
+function renderEvents() {
+  evGrid.innerHTML = events.map(e => `
     <div class="event-card">
-      <div class="event-date-tag">${e.type === 'Workshop' ? '🎨' : '🛍️'} ${e.date}</div>
-      <div class="event-name">${e.name}</div>
-      <div class="event-loc">${e.loc}</div>
+      <div class="event-date-tag">${e.type === 'Workshop' ? '🎨' : '🛍️'} ${safeText(displayEventDate(e.date))}</div>
+      <div class="event-name">${safeText(e.name)}</div>
+      <div class="event-loc">📍 ${safeText(e.location || String(e.loc || '').replace(/^📍\s*/, ''))}</div>
       <a href="#contact" class="event-join">${e.type === 'Workshop' ? 'Reserve a Spot!' : 'Pre-Order Here!'}</a>
     </div>
-  `;
-});
+  `).join('');
+}
 
 // Pickup event choices in checkout
-const checkoutEventSelect = document.getElementById('checkoutEvent');
-events.forEach(e => {
-  const opt = document.createElement('option');
-  opt.value = `${e.name} — ${e.date}`;
-  opt.textContent = `${e.name} — ${e.date}`;
-  checkoutEventSelect.appendChild(opt);
-});
-const otherEventOpt = document.createElement('option');
-otherEventOpt.value = 'Other (see notes)';
-otherEventOpt.textContent = 'Other / different date (tell us in notes)';
-checkoutEventSelect.appendChild(otherEventOpt);
+function populateCheckoutEvents() {
+  checkoutEventSelect.innerHTML = '<option value="">Pickup event — not sure yet</option>';
+  events.forEach(e => {
+    const opt = document.createElement('option');
+    opt.value = `${e.name} — ${displayEventDate(e.date)}`;
+    opt.textContent = `${e.name} — ${displayEventDate(e.date)}`;
+    checkoutEventSelect.appendChild(opt);
+  });
+  const otherEventOpt = document.createElement('option');
+  otherEventOpt.value = 'Other (see notes)';
+  otherEventOpt.textContent = 'Other / different date (tell us in notes)';
+  checkoutEventSelect.appendChild(otherEventOpt);
+}
+
+async function loadPublishedEvents() {
+  if (!ORDER_ENDPOINT) return;
+  try {
+    const response = await fetch(`${ORDER_ENDPOINT}?action=events`);
+    const data = await response.json();
+    if (!data.ok || !Array.isArray(data.events)) throw new Error('Events unavailable');
+    events = data.events;
+    renderEvents();
+    populateCheckoutEvents();
+  } catch (error) {
+    console.warn('Using fallback event schedule:', error.message);
+  }
+}
+
+renderEvents();
+populateCheckoutEvents();
+loadPublishedEvents();
 
 // Modal
 function openModal(id) {
